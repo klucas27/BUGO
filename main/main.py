@@ -17,52 +17,61 @@ class Bugo():
         workbook = openpyxl.load_workbook(caminho)
         pnl = workbook['orders']
         
-        info_pedido = {
-            f"{pnl['A2'].value}": [
-                """ Sobre o Pedido """ 
-                pnl['A2'].value,  # ID
-                pnl['J2'].value,  # Data Pagamento
+        # print(pnl.max_row)
+        ctt = 2
+        while ctt <= pnl.max_row:
+            info_pedido = {
+                f"{pnl[f'A{ctt}'].value}": [
+                    # Sobre o Pedido  
+                    pnl[f'A{ctt}'].value,  # ID
+                    pnl[f'J{ctt}'].value,  # Data Pagamento
+                    
+                    # Produtos 
+                    pnl[f'L{ctt}'].value,  # Nome do Produto
+                    pnl[f'M{ctt}'].value,  # SKU do Produto
+                    pnl[f'N{ctt}'].value,  # Variacao Produto
+                    pnl[f'O{ctt}'].value,  # Preco Original Produto
+                    pnl[f'P{ctt}'].value,  # Preco Acordadeo do Produto
+                    pnl[f'Q{ctt}'].value,  # Quantidade do Produto
+                    pnl[f'AL{ctt}'].value,  #Taxa Envio Reverso
+                    pnl[f'AM{ctt}'].value,  # Taxa Transacao
+                    pnl[f'AN{ctt}'].value,  # Taxa Comissao
+                    pnl[f'AO{ctt}'].value,  #  Taxa Servico
+                    
+                    # Sobre o Cliente
+                    pnl[f'AR{ctt}'].value,  # Username
+                    pnl[f'AY{ctt}'].value,  # Cidade Cliente
+                    pnl[f'AZ{ctt}'].value,  # Estado Cliente
+                ]
+            }
+            ctt += 1
+            for pas in info_pedido.values():
+                print(pas[0])
                 
-                """ Produtos """
-                pnl['L2'].value,  # Nome do Produto
-                pnl['M2'].value,  # SKU do Produto
-                pnl['N2'].value,  # Variacao Produto
-                pnl['O2'].value,  # Preco Original Produto
-                pnl['P2'].value,  # Preco Acordadeo do Produto
-                pnl['Q2'].value,  # Quantidade do Produto
-                pnl['AL2'].value,  #Taxa Envio Reverso
-                pnl['AM2'].value,  # Taxa Transacao
-                pnl['AN2'].value,  # Taxa Comissao
-                pnl['AO2'].value,  #  Taxa Servico
-                
-                """ Sobre o Cliente """
-                pnl['AR2'].value,  # Username
-                pnl['AY2'].value,  # Cidade Cliente
-                pnl['AZ2'].value  # Estado Cliente
-            ]
+                # for pas2 in pas:
+                #     print(pas2[1])
             
-        }
         
-        """ Sobre o Pedido """       
-        id_pedido = pnl['A2'].value
-        data_pagamento = pnl['J2'].value
+        # """ Sobre o Pedido """       
+        # id_pedido = pnl['A2'].value
+        # data_pagamento = pnl['J2'].value
         
-        """ Produtos """
-        produto_nome = pnl['L2'].value
-        produto_sku_ref = pnl['M2'].value
-        produto_variacao = pnl['N2'].value
-        produto_preco_orig = pnl['O2'].value
-        produto_preco_acordado = pnl['P2'].value
-        produto_quantidade = pnl['Q2'].value
-        produto_taxa_envio_reverso = pnl['AL2'].value
-        produto_taxa_transacao = pnl['AM2'].value
-        produto_taxa_comicao = pnl['AN2'].value
-        produto_taxa_servico = pnl['AO2'].value
+        # """ Produtos """
+        # produto_nome = pnl['L2'].value
+        # produto_sku_ref = pnl['M2'].value
+        # produto_variacao = pnl['N2'].value
+        # produto_preco_orig = pnl['O2'].value
+        # produto_preco_acordado = pnl['P2'].value
+        # produto_quantidade = pnl['Q2'].value
+        # produto_taxa_envio_reverso = pnl['AL2'].value
+        # produto_taxa_transacao = pnl['AM2'].value
+        # produto_taxa_comicao = pnl['AN2'].value
+        # produto_taxa_servico = pnl['AO2'].value
         
-        """ Sobre o Cliente """
-        cli_username = pnl['AR2'].value
-        cli_cidade = pnl['AY2'].value
-        cli_estado = pnl['AZ2'].value
+        # """ Sobre o Cliente """
+        # cli_username = pnl['AR2'].value
+        # cli_cidade = pnl['AY2'].value
+        # cli_estado = pnl['AZ2'].value
         
         
         
