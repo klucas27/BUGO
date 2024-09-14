@@ -52,21 +52,26 @@ class Bugo():
             
             for pas in info_pedido.values():
                 df = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="PRUDUTOS")
-                sheet_produtos[f"B{ctt2}"] = pas[3]
-                sheet_produtos[f"C{ctt2}"] = pas[2]
-                
                 if pas[3] in df.iloc[:, 1].values:
                     pass
                 else:
+                    sheet_produtos[f"C{ctt2}"] = pas[2]
+                    if pas[3] == "":
+                        valor_sku = input(f"Insira o sku de {pas[2]}")
+                        sheet_produtos[f"B{ctt2}"] = valor_sku
+                    else:
+                        sheet_produtos[f"B{ctt2}"] = pas[3]
+                        
                     custo_produto = input(f"Insira o Valor do produto {pas[2]} de SKU: {pas[3]}: \n")
                     sheet_produtos[f"D{ctt2}"] = custo_produto
                     workbook2.save("RELATORIO_VENDAS.xlsx")
+                    ctt2 += 1
                 
                 # sheet[f"C{ctt2}"] = pas[1]
                 # sheet[f"C{ctt2}"] = pas[1]
                 print(pas[0])
             ctt += 1
-            ctt2 += 1
+            
             
         workbook2.save("RELATORIO_VENDAS.xlsx")
                 # for pas2 in pas:
