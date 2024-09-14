@@ -1,3 +1,4 @@
+import openpyxl.workbook
 import pandas as pd
 import openpyxl
 print("Software para analises de dados!\n")
@@ -16,27 +17,31 @@ class Bugo():
         caminho = "C:\\Users\\PC FEIRAO 03\\Desktop\\Order.shipping.20240912_20240912.xlsx"
         workbook = openpyxl.load_workbook(caminho)
         pnl = workbook['orders']
-        
+        # df = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="PRUDUTOS")
+        workbook2 = openpyxl.load_workbook("RELATORIO_VENDAS.xlsx")
+        sheet_produtos = workbook2['PRUDUTOS']
+                
         # print(pnl.max_row)
         ctt = 2
-        while ctt <= pnl.max_row:
+        ctt2 = 4
+        while ctt <= pnl.max_row-93:
             info_pedido = {
                 f"{pnl[f'A{ctt}'].value}": [
                     # Sobre o Pedido  
-                    pnl[f'A{ctt}'].value,  # ID
-                    pnl[f'J{ctt}'].value,  # Data Pagamento
+                    pnl[f'A{ctt}'].value,  # ID 0
+                    pnl[f'J{ctt}'].value,  # Data Pagamento 1
                     
                     # Produtos 
-                    pnl[f'L{ctt}'].value,  # Nome do Produto
-                    pnl[f'M{ctt}'].value,  # SKU do Produto
-                    pnl[f'N{ctt}'].value,  # Variacao Produto
-                    pnl[f'O{ctt}'].value,  # Preco Original Produto
-                    pnl[f'P{ctt}'].value,  # Preco Acordadeo do Produto
-                    pnl[f'Q{ctt}'].value,  # Quantidade do Produto
-                    pnl[f'AL{ctt}'].value,  #Taxa Envio Reverso
-                    pnl[f'AM{ctt}'].value,  # Taxa Transacao
-                    pnl[f'AN{ctt}'].value,  # Taxa Comissao
-                    pnl[f'AO{ctt}'].value,  #  Taxa Servico
+                    pnl[f'L{ctt}'].value,  # Nome do Produto 2
+                    pnl[f'M{ctt}'].value,  # SKU do Produto 3
+                    pnl[f'N{ctt}'].value,  # Variacao Produto 4
+                    pnl[f'O{ctt}'].value,  # Preco Original Produto 5
+                    pnl[f'P{ctt}'].value,  # Preco Acordadeo do Produto 6
+                    pnl[f'Q{ctt}'].value,  # Quantidade do Produto 7
+                    pnl[f'AL{ctt}'].value,  #Taxa Envio Reverso 8
+                    pnl[f'AM{ctt}'].value,  # Taxa Transacao 9
+                    pnl[f'AN{ctt}'].value,  # Taxa Comissao 10
+                    pnl[f'AO{ctt}'].value,  #  Taxa Servico 11
                     
                     # Sobre o Cliente
                     pnl[f'AR{ctt}'].value,  # Username
@@ -44,10 +49,26 @@ class Bugo():
                     pnl[f'AZ{ctt}'].value,  # Estado Cliente
                 ]
             }
-            ctt += 1
+            
             for pas in info_pedido.values():
-                print(pas[0])
+                df = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="PRUDUTOS")
+                sheet_produtos[f"B{ctt2}"] = pas[3]
+                sheet_produtos[f"C{ctt2}"] = pas[2]
                 
+                if pas[3] in df.iloc[:, 1].values:
+                    pass
+                else:
+                    custo_produto = input(f"Insira o Valor do produto {pas[2]} de SKU: {pas[3]}: \n")
+                    sheet_produtos[f"D{ctt2}"] = custo_produto
+                    workbook2.save("RELATORIO_VENDAS.xlsx")
+                
+                # sheet[f"C{ctt2}"] = pas[1]
+                # sheet[f"C{ctt2}"] = pas[1]
+                print(pas[0])
+            ctt += 1
+            ctt2 += 1
+            
+        workbook2.save("RELATORIO_VENDAS.xlsx")
                 # for pas2 in pas:
                 #     print(pas2[1])
             
