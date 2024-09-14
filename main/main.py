@@ -17,6 +17,32 @@ class Bugo():
         workbook = openpyxl.load_workbook(caminho)
         pnl = workbook['orders']
         
+        info_pedido = {
+            f"{pnl['A2'].value}": [
+                """ Sobre o Pedido """ 
+                pnl['A2'].value,  # ID
+                pnl['J2'].value,  # Data Pagamento
+                
+                """ Produtos """
+                pnl['L2'].value,  # Nome do Produto
+                pnl['M2'].value,  # SKU do Produto
+                pnl['N2'].value,  # Variacao Produto
+                pnl['O2'].value,  # Preco Original Produto
+                pnl['P2'].value,  # Preco Acordadeo do Produto
+                pnl['Q2'].value,  # Quantidade do Produto
+                pnl['AL2'].value,  #Taxa Envio Reverso
+                pnl['AM2'].value,  # Taxa Transacao
+                pnl['AN2'].value,  # Taxa Comissao
+                pnl['AO2'].value,  #  Taxa Servico
+                
+                """ Sobre o Cliente """
+                pnl['AR2'].value,  # Username
+                pnl['AY2'].value,  # Cidade Cliente
+                pnl['AZ2'].value  # Estado Cliente
+            ]
+            
+        }
+        
         """ Sobre o Pedido """       
         id_pedido = pnl['A2'].value
         data_pagamento = pnl['J2'].value
