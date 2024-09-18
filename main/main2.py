@@ -7,12 +7,14 @@ class Main2:
     def __init__(self) -> None:
         pass
     
-    def save_produtos(linha_inserir, nome_produto, sku_produto):
+    def save_produtos(nome_produto, sku_produto):
             workbook_new = openpyxl.load_workbook("RELATORIO_VENDAS.xlsx")
             sheet = workbook_new["PRUDUTOS"]
             # sheet = workbook_new.active
             df = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="PRUDUTOS")
+            linha_inserir = sheet.max_row + 1    
             
+            print(sheet.max_row)
             #print(df.iloc[:, 2].values)
             if nome_produto in df.iloc[:, 2].values:
                 pass
@@ -23,7 +25,11 @@ class Main2:
                 sheet[f"D{linha_inserir}"] = custo
             
             workbook_new.save("RELATORIO_VENDAS.xlsx")
-   
+    
+    def save_pedidos(linha_inserir, infos_pedidos):
+        pass
+        
+        
     def obtendo_valores():     
         
         caminho = "pay07-14.xlsx"
@@ -37,7 +43,6 @@ class Main2:
         ctt = 0
         cont = 19
         total_valor = 0
-        linha_add_produto = 4
         print("start")
         while ctt != 2:                           
             if f"{pnl[f"C{cont}"].value}" != "Saque" and ctt == 1:
@@ -49,14 +54,12 @@ class Main2:
                 for linha in pnl_all["A"]:
                     if linha.value == pnl[f"D{cont}"].value:
                         print(pnl_all[f"M{linha_achada}"].value)
-                        Main2.save_produtos(linha_add_produto, 
-                                            pnl_all[f"M{linha_achada}"].value, 
+                        Main2.save_produtos(pnl_all[f"M{linha_achada}"].value, 
                                             pnl_all[f"N{linha_achada}"].value)
-                        linha_add_produto += 1
                     linha_achada += 1
-
-
-
+                
+                  
+            
                 
             elif f"{pnl[f"C{cont}"].value}" == "Saque" and ctt == 0:
                 total_valor -= float(pnl[f"H{cont}"].value)   
