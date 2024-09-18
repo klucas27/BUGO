@@ -8,10 +8,10 @@ class Bugo():
     def __init__(self) -> None:
         escolha = input("Informe a opção: ")
         if escolha == 1:
-            self.get_infos()
+            self.get_value_produtos
         pass
     
-    def get_infos():
+    def get_value_produtos():
         
         # caminho = input("Informe o caminho: ")
         caminho = "C:\\Users\\PC FEIRAO 03\\Desktop\\Order.shipping.20240912_20240912.xlsx"
@@ -24,7 +24,7 @@ class Bugo():
         # print(pnl.max_row)
         ctt = 2
         ctt2 = 4
-        while ctt <= pnl.max_row-93:
+        while ctt <= pnl.max_row-80:
             info_pedido = {
                 f"{pnl[f'A{ctt}'].value}": [
                     # Sobre o Pedido  
@@ -74,33 +74,12 @@ class Bugo():
             
             
         workbook2.save("RELATORIO_VENDAS.xlsx")
-                # for pas2 in pas:
-                #     print(pas2[1])
-            
+    
+    def pass_vendas_in_table():
         
-        # """ Sobre o Pedido """       
-        # id_pedido = pnl['A2'].value
-        # data_pagamento = pnl['J2'].value
-        
-        # """ Produtos """
-        # produto_nome = pnl['L2'].value
-        # produto_sku_ref = pnl['M2'].value
-        # produto_variacao = pnl['N2'].value
-        # produto_preco_orig = pnl['O2'].value
-        # produto_preco_acordado = pnl['P2'].value
-        # produto_quantidade = pnl['Q2'].value
-        # produto_taxa_envio_reverso = pnl['AL2'].value
-        # produto_taxa_transacao = pnl['AM2'].value
-        # produto_taxa_comicao = pnl['AN2'].value
-        # produto_taxa_servico = pnl['AO2'].value
-        
-        # """ Sobre o Cliente """
-        # cli_username = pnl['AR2'].value
-        # cli_cidade = pnl['AY2'].value
-        # cli_estado = pnl['AZ2'].value
         
         
         
 if __name__ == "__main__":
-    Bugo.get_infos()
+    Bugo.get_value_produtos()
     
