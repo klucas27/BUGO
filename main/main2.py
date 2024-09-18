@@ -7,19 +7,24 @@ class Main2:
     def __init__(self) -> None:
         pass
     
-    
-    
-    
-    def obtendo_valores():
-        
-        def save_produtos(linha_inserir, nome_produto, sku_produto):
-            workbook_new = openpyxl.Workbook("RELATORIO_VENDAS.xlsx")
-            sheet = workbook_new.active
-            sheet[f"C{linha_inserir}"] = f"{nome_produto}"
-            sheet[f"B{linha_inserir}"] = f"{sku_produto}"
-            custo = input("informe o vlaor do produto: ")
-            sheet[f"D{linha_inserir}"] = custo
+    def save_produtos(linha_inserir, nome_produto, sku_produto):
+            workbook_new = openpyxl.load_workbook("RELATORIO_VENDAS.xlsx")
+            sheet = workbook_new["PRUDUTOS"]
+            # sheet = workbook_new.active
+            df = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="PRUDUTOS")
+            
+            #print(df.iloc[:, 2].values)
+            if nome_produto in df.iloc[:, 2].values:
+                pass
+            else:
+                sheet[f"C{linha_inserir}"] = f"{nome_produto}"
+                sheet[f"B{linha_inserir}"] = f"{sku_produto}"
+                custo = input("informe o vlaor do produto: ")
+                sheet[f"D{linha_inserir}"] = custo
+            
             workbook_new.save("RELATORIO_VENDAS.xlsx")
+   
+    def obtendo_valores():     
         
         caminho = "pay07-14.xlsx"
         caminho_all = "all19-08a18-09.xlsx"
@@ -44,10 +49,10 @@ class Main2:
                 for linha in pnl_all["A"]:
                     if linha.value == pnl[f"D{cont}"].value:
                         print(pnl_all[f"M{linha_achada}"].value)
-                        # save_produtos(linha_add_produto, 
-                        #                     pnl_all[f"M{linha_achada}"].value, 
-                        #                     pnl_all[f"N{linha_achada}"].value)
-                        # linha_add_produto += 1
+                        Main2.save_produtos(linha_add_produto, 
+                                            pnl_all[f"M{linha_achada}"].value, 
+                                            pnl_all[f"N{linha_achada}"].value)
+                        linha_add_produto += 1
                     linha_achada += 1
 
 
