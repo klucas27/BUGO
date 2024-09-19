@@ -47,11 +47,11 @@ class Main2:
             sheet_vendas[f"F{linha_inserir_vendas}"] = f"{produto[3]}"  #  Quantidade produto
             sheet_vendas[f"G{linha_inserir_vendas}"] = f"{produto[4]}"  #  Estado do cliente
             sheet_vendas[f"H{linha_inserir_vendas}"] = f"{produto[5]}"  #  DATA DO PEDIDO
-            sheet_vendas[f"I{linha_inserir_vendas}"] = f"{produto[6]}"  #  VALOR DO PEDIDO
+            sheet_vendas[f"I{linha_inserir_vendas}"] = f"{float(produto[6]):.2f}"  #  VALOR DO PEDIDO
             
-            custo_plataforma = float(produto[6]) - (float(produto[7]) + float(produto[8]) + float(produto[9]) + float(produto[10]) + float(produto[11]))
+            valor_pago_plataforma = float(produto[6]) - (float(produto[7]) + float(produto[8]) + float(produto[9]) + float(produto[10]) + float(produto[11]))
             
-            sheet_vendas[f"J{linha_inserir_vendas}"] = custo_plataforma  #  VALOR PAGO A PLATAFORMA
+            sheet_vendas[f"J{linha_inserir_vendas}"] = valor_pago_plataforma  #  VALOR PAGO A PLATAFORMA
             
             custo_produto = 0
             line_find = 0
@@ -64,9 +64,11 @@ class Main2:
                     custo_produto = float(sheet_produtos[f"E{line_find+1}"].value)
                 line_find +=1
             
-            sheet_vendas[f"K{linha_inserir_vendas}"] = custo_produto*float(produto[3]) #  CUSTO TOTAL DO PRODUTO
+            sheet_vendas[f"K{linha_inserir_vendas}"] = round(custo_produto*float(produto[3])) #  CUSTO TOTAL DO PRODUTO
 
-            # lucro_final = 
+            lucro_final = valor_pago_plataforma - custo_produto
+            sheet_vendas[f"L{linha_inserir_vendas}"] = round(lucro_final, 2)  #  VALOR PAGO A PLATAFORMA
+
             
         #SAVE TUDO
         workbook_new.save("RELATORIO_VENDAS.xlsx")
