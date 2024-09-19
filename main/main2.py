@@ -9,9 +9,9 @@ class Main2:
     
     def save_produtos(produto, id_pedido):
         workbook_new = openpyxl.load_workbook("RELATORIO_VENDAS.xlsx")
-        sheet_produtos = workbook_new["PRUDUTOS"]
+        sheet_produtos = workbook_new["PRODUTOS"]
         sheet_vendas = workbook_new["VENDAS"]
-        df = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="PRUDUTOS")
+        df = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="PRODUTOS")
         df_vendas = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="VENDAS")
     
         linha_inserir = sheet_produtos.max_row + 1
@@ -64,7 +64,7 @@ class Main2:
                     custo_produto = float(sheet_produtos[f"E{line_find+1}"].value)
                 line_find +=1
             
-            sheet_vendas[f"K{linha_inserir_vendas}"] = custo_produto*float(produto[3]) #  VALOR PAGO A PLATAFORMA
+            sheet_vendas[f"K{linha_inserir_vendas}"] = custo_produto*float(produto[3]) #  CUSTO TOTAL DO PRODUTO
 
             # lucro_final = 
             
