@@ -64,6 +64,7 @@ class Main2:
                     # if linha.value == "S/V"
                     # # print(linha.value)
                     custo_produto = float(f"{sheet_produtos[f"E{line_find+1}"].value}".replace(",", "."))
+                    print(custo_produto)
                 line_find +=1
             
             sheet_vendas[f"K{linha_inserir_vendas}"] = round(custo_produto*float(produto[3]), 2) #  CUSTO TOTAL DO PRODUTO
@@ -71,9 +72,13 @@ class Main2:
             lucro_final = valor_pago_plataforma - (custo_produto*float(produto[3]))
             sheet_vendas[f"L{linha_inserir_vendas}"] = round(lucro_final, 2)  #  VALOR PAGO A PLATAFORMA
 
-            porcent_lucro = ((float(lucro_final)*100)/custo_produto)
-            
-            sheet_vendas[f"M{linha_inserir_vendas}"] = f"{round(porcent_lucro, 2)}%"  #  VALOR % LUCRO
+            try:
+                porcent_lucro = ((float(lucro_final)*100)/custo_produto)
+                sheet_vendas[f"M{linha_inserir_vendas}"] = f"{round(porcent_lucro, 2)}%"  #  VALOR % LUCRO                
+            except:
+                os.system(f"Echo 'ERROr: Lucro: {lucro_final} | Custo: {custo_produto}'")
+                os.system("Pause")
+                
 
             
         #SAVE TUDO
@@ -105,15 +110,17 @@ class Main2:
         ctt = 0
         cont = 19
         total_valor = 0
-        print("start")
+        # print("start")
         while ctt != 2:                           
             if f"{pnl[f"C{cont}"].value}" != "Saque" and ctt == 1:
                 ### Valores que não sao o saque
                 # print(pnl[f"D{cont}"].value, pnl[f"F{cont}"].value)
                 total_valor += float(pnl[f"F{cont}"].value)
+                #print(pnl_all["A"])                   
                 
                 linha_achada = 1
                 for linha in pnl_all["A"]:
+                    #print(linha.value)
                     if linha.value == pnl[f"D{cont}"].value:
                         print(f"-> PRODUTO: {pnl_all[f"M{linha_achada}"].value}\n  -> VARIAÇÃO: {pnl_all[f"O{linha_achada}"].value}\n  -> SKU: {pnl_all[f"N{linha_achada}"].value}")
                         Main2.save_produtos([pnl_all[f"N{linha_achada}"].value,  #  0 SKU PRODUTO
@@ -130,8 +137,11 @@ class Main2:
                                             pnl_all[f"AP{linha_achada}"].value,  #  11 TAXA DE SERVIÇO
                                             ], pnl_all[f"A{linha_achada}"].value,)
                     linha_achada += 1
-                
-                  
+                # else:
+                #     os.system("Pause")
+                    
+
+                    
             
                 os.system('cls')
             elif f"{pnl[f"C{cont}"].value}" == "Saque" and ctt == 0:
