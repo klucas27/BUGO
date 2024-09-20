@@ -61,13 +61,17 @@ class Main2:
                 if linha.value == produto[1] and f"{sheet_produtos[f"D{line_find+1}"].value}" == f"{produto[2]}":
                     # if linha.value == "S/V"
                     # # print(linha.value)
-                    custo_produto = float(sheet_produtos[f"E{line_find+1}"].value)
+                    custo_produto = float(f"{sheet_produtos[f"E{line_find+1}"].value}".replace(",", "."))
                 line_find +=1
             
-            sheet_vendas[f"K{linha_inserir_vendas}"] = round(custo_produto*float(produto[3])) #  CUSTO TOTAL DO PRODUTO
+            sheet_vendas[f"K{linha_inserir_vendas}"] = round(custo_produto*float(produto[3]), 2) #  CUSTO TOTAL DO PRODUTO
 
-            lucro_final = valor_pago_plataforma - custo_produto
+            lucro_final = valor_pago_plataforma - (custo_produto*float(produto[3]))
             sheet_vendas[f"L{linha_inserir_vendas}"] = round(lucro_final, 2)  #  VALOR PAGO A PLATAFORMA
+
+            porcent_lucro = ((float(lucro_final)*100)/custo_produto)
+            
+            sheet_vendas[f"M{linha_inserir_vendas}"] = f"{round(porcent_lucro, 2)}%"  #  VALOR % LUCRO
 
             
         #SAVE TUDO
