@@ -102,10 +102,31 @@ class Main:
         workbook_new = openpyxl.load_workbook("RELATORIO_VENDAS.xlsx")
         sheet_vendas = workbook_new["VENDAS"]
         df_vendas = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="VENDAS")
+        linha_inserir_vendas = sheet_vendas.max_row + 1
         
-        
-        
-        
+        if id_igual == False:
+            if infos_pedidos[0] in df_vendas.iloc[:, 1].values and infos_pedidos[2] in df_vendas.iloc[:, 3].values and infos_pedidos[3] in df_vendas.iloc[:, 4].values:
+                pass
+            elif infos_pedidos[0] in df_vendas.iloc[:, 1].values and infos_pedidos[2] in df_vendas.iloc[:, 3].values and infos_pedidos[3] == "S/V":
+                pass
+            else:
+                sheet_vendas[f"B{linha_inserir_vendas}"] = f"{infos_pedidos[0]}"   #  ID Pedido
+                sheet_vendas[f"C{linha_inserir_vendas}"] = f"{infos_pedidos[1]}"   #  SKU
+                sheet_vendas[f"D{linha_inserir_vendas}"] = f"{infos_pedidos[2]}"   #  PRODUTO
+                sheet_vendas[f"E{linha_inserir_vendas}"] = f"{infos_pedidos[3]}"   #  VARIAÇÃO
+                sheet_vendas[f"F{linha_inserir_vendas}"] = f"{infos_pedidos[4]}"   #  QUANTIDADE
+                sheet_vendas[f"G{linha_inserir_vendas}"] = f"{infos_pedidos[5]}"   #  ESTADO COMPRADOR
+                sheet_vendas[f"H{linha_inserir_vendas}"] = f"{infos_pedidos[6]}"   #  DATA E HORA
+                sheet_vendas[f"I{linha_inserir_vendas}"] = f"{infos_pedidos[7]}"   #  VALOR DO PRODUTO
+                sheet_vendas[f"J{linha_inserir_vendas}"] = f"{infos_pedidos[8]}"   #  VALOR PEDIDO
+                sheet_vendas[f"K{linha_inserir_vendas}"] = f"{infos_pedidos[9]}"   #  VALOR PAGO A PLATAFORMA
+                
+                custo_produto = 
+                sheet_vendas[f"L{linha_inserir_vendas}"] = f"{custo_produto}"   #  ID Pedido
+                sheet_vendas[f"M{linha_inserir_vendas}"] = f"{infos_pedidos[0]}"   #  ID Pedido
+                sheet_vendas[f"N{linha_inserir_vendas}"] = f"{infos_pedidos[0]}"   #  ID Pedido
+                       
+             
         
 
         
