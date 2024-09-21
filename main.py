@@ -137,14 +137,19 @@ class Main:
                 sheet_vendas[f"I{linha_inserir_vendas}"] = f"{round(float(infos_pedidos[7]), 2)}"   #  VALOR DO PRODUTO
                 sheet_vendas[f"J{linha_inserir_vendas}"] = f"{round(float(infos_pedidos[8]), 2)}"   #  VALOR PEDIDO
                 sheet_vendas[f"K{linha_inserir_vendas}"] = f"{round(float(infos_pedidos[9]), 2)}"   #  VALOR PAGO DA PLATAFORMA
+                sheet_vendas[f"L{linha_inserir_vendas}"] = f"{round(float(infos_pedidos[10]), 2)}"   #  Custo produto
                 
-                custo_produto = round((Main.consulta_preco([infos_pedidos[2], infos_pedidos[3]])*int(infos_pedidos[4])), 2)
-                sheet_vendas[f"L{linha_inserir_vendas}"] = f"{custo_produto}"   #  CUSTO DO PRODUTO
+                # custo_produto = round((Main.consulta_preco([infos_pedidos[2], infos_pedidos[3]])*int(infos_pedidos[4])), 2)
+                # print(f"Custo do produto: {(Main.consulta_preco([infos_pedidos[2], infos_pedidos[3]]))}")
+                # sheet_vendas[f"L{linha_inserir_vendas}"] = f"{custo_produto}"   #  CUSTO DO PRODUTO
                 
-                lucro_final = round(infos_pedidos[9] - custo_produto, 2)
+                lucro_final = round(infos_pedidos[9] - infos_pedidos[10], 2)
                 sheet_vendas[f"M{linha_inserir_vendas}"] = f"{lucro_final}"   #  LUCRO FINAL
-                
-                perc_lucro = round((lucro_final*100)/custo_produto, 2)
+                perc_lucro = 0
+                if infos_pedidos[10] == 0:
+                    perc_lucro = 0
+                else:
+                    perc_lucro = round((lucro_final*100)/infos_pedidos[10], 2)
                 
                 sheet_vendas[f"N{linha_inserir_vendas}"] = f"{perc_lucro}%"   #  % DE LUCRO
                 workbook_pedidos.save("RELATORIO_VENDAS.xlsx")
@@ -159,9 +164,10 @@ class Main:
                 sheet_vendas[f"I{linha_inserir_vendas}"] = f"{infos_pedidos[7]}"   #  VALOR DO PRODUTO
                 sheet_vendas[f"J{linha_inserir_vendas}"] = f"{infos_pedidos[8]}"   #  VALOR PEDIDO
                 sheet_vendas[f"K{linha_inserir_vendas}"] = f"{infos_pedidos[9]}"   #  VALOR PAGO DA PLATAFORMA
+                sheet_vendas[f"L{linha_inserir_vendas}"] = f"{infos_pedidos[10]}"   #  custo Produto
                 
-                custo_produto = Main.consulta_preco([infos_pedidos[2], infos_pedidos[3]])
-                sheet_vendas[f"L{linha_inserir_vendas}"] = f"{custo_produto}"   #  CUSTO DO PRODUTO
+                # custo_produto = round((Main.consulta_preco([infos_pedidos[2], infos_pedidos[3]])*int(infos_pedidos[4])), 2)
+                # sheet_vendas[f"L{linha_inserir_vendas}"] = f"{custo_produto}"   #  CUSTO DO PRODUTO
                 workbook_pedidos.save("RELATORIO_VENDAS.xlsx")
                 
                 # lucro_final = infos_pedidos[9] - custo_produto
@@ -177,101 +183,152 @@ class Main:
         
     def obtendo_valores():     
         
-        caminho = "pay.xlsx"
+        caminho_pay = "pay.xlsx"
         caminho_all = "all.xlsx"
-        workbook = openpyxl.load_workbook(caminho)
-        workbook_all = openpyxl.load_workbook(caminho_all)
-    
-        pnl = workbook['Sheet1']
-        pnl_all = workbook_all['orders']
+        caminho_relat_vendas = "RELATORIO_VENDAS.xlsx"
         
-        print("----MENU----")
-        escolha_menu = 0
-        print("1 - Para Obter os produtos")
-        print("2 - Para Obter os pedidos")
-        escolha_menu = input(">> ")
-        print(escolha_menu)
-        if int(escolha_menu) == 1:
-            print("Entrou na opção 1!")
-            ctt = 0
-            cont = 19
-            id_obtido = None
-            # total_valor = 0
-            # print("start")
-            while ctt != 2:                           
-                if f"{pnl[f"C{cont}"].value}" != "Saque" and ctt == 1:
-                    ### Valores que não sao o saque
-                    # print(pnl[f"D{cont}"].value, pnl[f"F{cont}"].value)
-                    # total_valor += float(pnl[f"F{cont}"].value)
-                    #print(pnl_all["A"])                   
+        workbook_pay = openpyxl.load_workbook(caminho_pay)
+        workbook_all = openpyxl.load_workbook(caminho_all)
+        
+        df_oders = pd.read_excel("all.xlsx", sheet_name="orders")
+        df_vendas = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="VENDAS")
+        df_pay = pd.read_excel("pay.xlsx", sheet_name="Sheet1")
+                
+        tp_oders = df_oders.itertuples()
+        tp_pay = df_pay.itertuples()                
+        start = 0
+        for ids_pay in tp_pay:
+            if str(ids_pay._3) == "Saque":
+                start += 1
+            if start == 1:
+                for ids_oders in df_oders.itertuples():
+                    if ids_pay._4 == ids_oders._1:
+                        print(ids_pay._4)
+                    else:
+                        os.system("Pause")
+                
+            if start > 1:
+                break
+            
+        
+        
+        # print("----MENU----")
+        # escolha_menu = 0
+        # print("1 - Para Obter os produtos")
+        # print("2 - Para Obter os pedidos")
+        # escolha_menu = input(">> ")
+        # print(escolha_menu)
+        # if int(escolha_menu) == 1:
+        #     print("Entrou na opção 1!")
+        #     ctt = 0
+        #     cont = 19
+        #     id_obtido = None          
+            
+        #     while ctt != 2:                           
+        #         if f"{pnl[f"C{cont}"].value}" != "Saque" and ctt == 1: 
+                                    
+        #             linha_achada = 1
                     
-                    linha_achada = 1
-                    for linha in pnl_all["A"]:
-                        #print(linha.value)
-                        if linha.value == pnl[f"D{cont}"].value:
+        #             for linha in pnl_all["A"]: # pnl_all da tabela all
+
+        #                 if linha.value == pnl[f"D{cont}"].value:
                             
-                            print(f"-> PRODUTO: {pnl_all[f"M{linha_achada}"].value}\n  -> VARIAÇÃO: {pnl_all[f"O{linha_achada}"].value}\n  -> SKU: {pnl_all[f"N{linha_achada}"].value}")
-                            # Main2.save_produtos([pnl_all[f"N{linha_achada}"].value,  #  0 SKU PRODUTO
-                            #                     pnl_all[f"M{linha_achada}"].value,   #  1 NOME PRODUTO
-                            #                     pnl_all[f"O{linha_achada}"].value,   #  2 VARIAÇÃO PRODUTO
-                            #                     pnl_all[f"R{linha_achada}"].value,   #  3 QUANTIDADE
-                            #                     pnl_all[f"BA{linha_achada}"].value,  #  4 ESTADO DO CLIENTE
-                            #                     pnl_all[f"K{linha_achada}"].value,   #  5 DATA E HORA QUE O PEDIDO FOI LIBERADO
-                            #                     pnl_all[f"T{linha_achada}"].value,   #  6 SUBTOTAL 
-                            #                     pnl_all[f"AB{linha_achada}"].value,  #  7 CUPOM VENDEDOR  
-                            #                     pnl_all[f"AC{linha_achada}"].value,  #  8 COIN CASHBACK  
-                            #                     pnl_all[f"AG{linha_achada}"].value,  #  9 DESCONTO + por -  
-                            #                     pnl_all[f"AO{linha_achada}"].value,  #  10 TAXA DE COMISSAO  
-                            #                     pnl_all[f"AP{linha_achada}"].value,  #  11 TAXA DE SERVIÇO
-                            #                     ])
-                            Main.save_produtos([pnl_all[f"N{linha_achada}"].value, #  0 SKU PRODUTO
-                                                pnl_all[f"M{linha_achada}"].value, #  1 NOME PRODUTO
-                                                pnl_all[f"O{linha_achada}"].value  #  2 VARIAÇÃO PRODUTO
-                                                ])
-                            if id_obtido != pnl_all[f"A{linha_achada}"].value:
-                                Main.save_pedidos([
-                                    pnl_all[f"A{linha_achada}"].value,  #  0 ID PEDIDO
-                                    pnl_all[f"N{linha_achada}"].value,  #  1 SKU PRODUTO
-                                    pnl_all[f"M{linha_achada}"].value,  #  2 NOME DO PRODUTO
-                                    pnl_all[f"O{linha_achada}"].value,  #  3 VARIAÇÃO PRODUTO
-                                    pnl_all[f"R{linha_achada}"].value,  #  4 QUANTIDADE DE PRODUTO
-                                    pnl_all[f"BA{linha_achada}"].value, #  5 ESTADO DO COMPRADOR
-                                    pnl_all[f"BE{linha_achada}"].value, #  6 DATA E HORAS
-                                    float(pnl_all[f"Q{linha_achada}"].value), # 7 VALOR VENDA DO PRODUTO
-                                    float(pnl_all[f"AJ{linha_achada}"].value), #  8 VALOR TOTAL DO PEDIDO
-                                    (float(pnl_all[f"AJ{linha_achada}"].value) - 
-                                     (float(pnl_all[f"AO{linha_achada}"].value) + 
-                                     float(pnl_all[f"AP{linha_achada}"].value)+
-                                     float(pnl_all[f"AB{linha_achada}"].value)+
-                                     float(pnl_all[f"AG{linha_achada}"].value))) #  9 VALOR TOTAL PAGO A PLATAFORMA
-                                ])
-                            else:
-                                Main.save_pedidos([
-                                    "-",  #  0 ID PEDIDO
-                                    pnl_all[f"N{linha_achada}"].value,  #  1 SKU PRODUTO
-                                    pnl_all[f"M{linha_achada}"].value,  #  2 NOME DO PRODUTO
-                                    pnl_all[f"O{linha_achada}"].value,  #  3 VARIAÇÃO PRODUTO
-                                    pnl_all[f"R{linha_achada}"].value,  #  4 QUANTIDADE DE PRODUTO
-                                    "-", #  5 ESTADO DO COMPRADOR
-                                    "-", #  6 DATA E HORAS
-                                    float(pnl_all[f"Q{linha_achada}"].value), # 7 VALOR VENDA DO PRODUTO
-                                    0, #  8 VALOR TOTAL DO PEDIDO
-                                    "-" #  9 VALOR TOTAL PAGO A PLATAFORMA
-                                ], id_igual=True)
-                             
-                            id_obtido = pnl_all[f"A{linha_achada}"].value
-                        linha_achada += 1
-                    os.system('cls')
-                # elif f"{pnl[f"C{cont}"].value}" == "Saque" and ctt == 0:
-                #     total_valor -= float(pnl[f"H{cont}"].value)   
+        #                     if (df_vendas.iloc[:, 1] == linha.value).sum() > 0:
+        #                         continue
+        #                     else:
+                            
+        #                         print(f"-> PRODUTO: {pnl_all[f"M{linha_achada}"].value}\n  -> VARIAÇÃO: {pnl_all[f"O{linha_achada}"].value}\n  -> SKU: {pnl_all[f"N{linha_achada}"].value}")
+                                
+        #                         Main.save_produtos([pnl_all[f"N{linha_achada}"].value, #  0 SKU PRODUTO
+        #                                             pnl_all[f"M{linha_achada}"].value, #  1 NOME PRODUTO
+        #                                             pnl_all[f"O{linha_achada}"].value  #  2 VARIAÇÃO PRODUTO
+        #                                             ])
+        #                         variacao = None
+        #                         if pnl_all[f"O{linha_achada}"].value == "":
+        #                             variacao = "S/V"
+        #                         else:
+        #                             variacao = pnl_all[f"O{linha_achada}"].value
+                                    
+        #                         total_de_vezes = (df_oders.iloc[:, 0] == pnl_all[f"A{linha_achada}"].value).sum()
+        #                         # print(total_de_vezes)
+        #                         valor_total_pedido = 0
+        #                         custo_total_pedido = 0
+        #                         if total_de_vezes == 1:
+        #                             valor_total_pedido = float(pnl_all[f"T{linha_achada}"].value)
+        #                             custo_total_pedido = round((Main.consulta_preco([pnl_all[f"M{linha_achada}"].value, variacao])*int(pnl_all[f"R{linha_achada}"].value)), 2)                                 
+        #                             Main.save_pedidos([
+        #                                 pnl_all[f"A{linha_achada}"].value,  #  0 ID PEDIDO
+        #                                 pnl_all[f"N{linha_achada}"].value,  #  1 SKU PRODUTO
+        #                                 pnl_all[f"M{linha_achada}"].value,  #  2 NOME DO PRODUTO
+        #                                 variacao,  #  3 VARIAÇÃO PRODUTO
+        #                                 pnl_all[f"R{linha_achada}"].value,  #  4 QUANTIDADE DE PRODUTO
+        #                                 pnl_all[f"BA{linha_achada}"].value, #  5 ESTADO DO COMPRADOR
+        #                                 pnl_all[f"BE{linha_achada}"].value, #  6 DATA E HORAS
+        #                                 float(pnl_all[f"Q{linha_achada}"].value), # 7 VALOR VENDA DO PRODUTO
+        #                                 valor_total_pedido, #  8 VALOR TOTAL DO PEDIDO
+        #                                 (float(pnl_all[f"AJ{linha_achada}"].value) - 
+        #                                 (float(pnl_all[f"AO{linha_achada}"].value) + 
+        #                                 float(pnl_all[f"AP{linha_achada}"].value)+
+        #                                 float(pnl_all[f"AB{linha_achada}"].value)+
+        #                                 float(pnl_all[f"AG{linha_achada}"].value))), #  9 VALOR TOTAL PAGO A PLATAFORMA
+        #                                 float(custo_total_pedido)  # 10 Custo de produtos
+        #                             ])
+                                
+        #                         else:
+        #                             for pas in range(0, total_de_vezes):
+        #                                 valor_total_pedido += float(pnl_all[f"T{linha_achada+pas}"].value)
+        #                                 custo_total_pedido += float(round((Main.consulta_preco([pnl_all[f"M{linha_achada+pas}"].value, variacao])*int(pnl_all[f"R{linha_achada+pas}"].value)), 2))
+        #                                 # os.system("Pause")
+                                    
+        #                             Main.save_pedidos([
+        #                                 pnl_all[f"A{linha_achada}"].value,  #  0 ID PEDIDO
+        #                                 pnl_all[f"N{linha_achada}"].value,  #  1 SKU PRODUTO
+        #                                 pnl_all[f"M{linha_achada}"].value,  #  2 NOME DO PRODUTO
+        #                                 variacao,  #  3 VARIAÇÃO PRODUTO
+        #                                 pnl_all[f"R{linha_achada}"].value,  #  4 QUANTIDADE DE PRODUTO
+        #                                 pnl_all[f"BA{linha_achada}"].value, #  5 ESTADO DO COMPRADOR
+        #                                 pnl_all[f"BE{linha_achada}"].value, #  6 DATA E HORAS
+        #                                 float(pnl_all[f"Q{linha_achada}"].value), # 7 VALOR VENDA DO PRODUTO
+        #                                 valor_total_pedido, #  8 VALOR TOTAL DO PEDIDO
+        #                                 (float(valor_total_pedido) - (float(pnl_all[f"AO{linha_achada}"].value) + 
+        #                                 float(pnl_all[f"AP{linha_achada}"].value)+
+        #                                 float(pnl_all[f"AB{linha_achada}"].value)+
+        #                                 float(pnl_all[f"AG{linha_achada}"].value))), #  9 VALOR TOTAL PAGO A PLATAFORMA
+        #                                 float(custo_total_pedido)  # 10 Custo total de mercadoria
+        #                             ])
+        #                             linha_achada += 1
+        #                             for pas in range(1, total_de_vezes):
+        #                                 Main.save_pedidos([
+        #                                 "||",  #  0 ID PEDIDO
+        #                                 pnl_all[f"N{linha_achada}"].value,  #  1 SKU PRODUTO
+        #                                 pnl_all[f"M{linha_achada}"].value,  #  2 NOME DO PRODUTO
+        #                                 variacao,  #  3 VARIAÇÃO PRODUTO
+        #                                 pnl_all[f"R{linha_achada}"].value,  #  4 QUANTIDADE DE PRODUTO
+        #                                 "||", #  5 ESTADO DO COMPRADOR
+        #                                 "||", #  6 DATA E HORAS
+        #                                 float(pnl_all[f"Q{linha_achada}"].value), # 7 VALOR VENDA DO PRODUTO
+        #                                 "||", #  8 VALOR TOTAL DO PEDIDO
+        #                                 "||", #  9 VALOR TOTAL PAGO A PLATAFORMA
+        #                                 "||"  # 10 Custo Mercadoria
+        #                                 ], id_igual=True)
+        #                                 linha_achada += 1
+                                    
+                            
+                                        
+                                
+        #                     # id_obtido = pnl_all[f"A{linha_achada}"].value
+        #                 linha_achada += 1
+        #             # os.system('cls')
+        #         # elif f"{pnl[f"C{cont}"].value}" == "Saque" and ctt == 0:
+        #         #     total_valor -= float(pnl[f"H{cont}"].value)   
                     
-                if f"{pnl[f"C{cont}"].value}" == "Saque":
-                    ctt+=1
-                cont+=1
-            # print(pnl["A"].value)
-            # print(f"TOTAL DE SAQUE: {float(total_valor):.2f}")
-        elif escolha_menu == 2:
-            Main.save_pedidos()
+        #         if f"{pnl[f"C{cont}"].value}" == "Saque":
+        #             ctt+=1
+        #         cont+=1
+        #     # print(pnl["A"].value)
+        #     # print(f"TOTAL DE SAQUE: {float(total_valor):.2f}")
+        # elif escolha_menu == 2:
+        #     Main.save_pedidos()
         
         
 Main.obtendo_valores()
