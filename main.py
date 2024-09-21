@@ -192,23 +192,25 @@ class Main:
         
         df_oders = pd.read_excel("all.xlsx", sheet_name="orders")
         df_vendas = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="VENDAS")
+        df_produtos = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="PRODUTOS")
         df_pay = pd.read_excel("pay.xlsx", sheet_name="Sheet1")
                 
         tp_oders = df_oders.itertuples()
         tp_pay = df_pay.itertuples()                
         start = 0
-        for ids_pay in tp_pay:
-            if str(ids_pay._3) == "Saque":
-                start += 1
-            if start == 1:
-                for ids_oders in df_oders.itertuples():
-                    if ids_pay._4 == ids_oders._1:
-                        print(ids_pay._4)
-                    else:
-                        os.system("Pause")
-                
-            if start > 1:
-                break
+        # for ids_pay in tp_pay:
+        #     if str(ids_pay._3) == "Saque":
+        #         start += 1
+        #     if start == 1:
+        #         for ids_oders in df_oders.itertuples():
+        #             if ids_pay._4 == ids_oders._1:
+        #                 if df_produtos.iloc[:, 3].isin([""])
+                        
+                        
+        #                 print(ids_oders)
+                                    
+        #     if start > 1:
+        #         break
             
         
         
