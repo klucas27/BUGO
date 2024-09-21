@@ -179,6 +179,62 @@ class Main:
     
         # workbook_pedidos.save("RELATORIO_VENDAS.xlsx")
                
+
+    def start_main():
+        caminho_pay = "pay.xlsx"
+        df_pay = pd.read_excel(caminho_pay, sheet_name="Sheet1")
+                
+        ## Obtenção dos ids Sacados
+        start_saque = 0
+        id_sacados = []
+        print("Obtendo ids Sacados...")        
+        for ids in df_pay.itertuples():
+            if ids._3 == "Saque":
+                start_saque +=1
+                continue
+            if start_saque == 1:
+                id_sacados.append(ids._4)
+
+        ## Obtenção das informações dos pedidos conforme por id
+        print("Obtendo informações do pedido...")
+        caminho_all_oders = "all.xlsx"
+        
+        df_all_oders = pd.read_excel(caminho_all_oders, sheet_name="orders")
+        # print(id_sacados.count("240831QTPQHE7X"))
+        infos_obtidas = []
+        for pedidos_all in df_all_oders.itertuples():
+            if id_sacados.count(f"{pedidos_all._1}") > 0:
+                print(pedidos_all)
+                infos_obtidas.append([
+                    pedidos_all._1,  #  ID
+                    pedidos_all._2,  # Status
+                    pedidos_all._9,  # dia do envio
+                    pedidos_all._11,  # dia pedido confirmado
+                    pedidos_all._13,  # Nome do produto
+                    pedidos_all._14,  # sku
+                    pedidos_all._15,  # variação
+                    pedidos_all._16,  # preço original
+                    pedidos_all._17,  # preço de venda
+                    pedidos_all.Quantidade,  # quantidade
+                    pedidos_all._20,  # Sbtotal
+                    pedidos_all._28,  # gasto cupom
+                    pedidos_all._33,  # desconto + po -
+                    pedidos_all._36,  # Valor Total
+                    pedidos_all._39,  # Taxa reversa
+                    pedidos_all._40,  # Taxa transação
+                    pedidos_all._41,  # Taxa comissao
+                    pedidos_all._42,  # Taxa de serviço
+                    pedidos_all.UF,  # Estado do cliente
+                    pedidos_all._57,  # data completado                    
+                    ])
+        
+        print(infos_obtidas)
+    
+        ## obtendo valores de custo
+        caminho_save_relatorio = "RELATORIO_VENDAS.xlsx"
+        df_produtos_save = pd.read_excel(caminho_save_relatorio, sheet_name="PRODUTOS")
+        
+        
         
         
     def obtendo_valores():     
@@ -196,8 +252,13 @@ class Main:
         df_pay = pd.read_excel("pay.xlsx", sheet_name="Sheet1")
                 
         tp_oders = df_oders.itertuples()
-        tp_pay = df_pay.itertuples()                
+        tp_pay = list(df_pay.itertuples())                
         start = 0
+        
+        for pas in tp_pay:
+            print("\n", pas.Pandas[2])
+        
+        
         # for ids_pay in tp_pay:
         #     if str(ids_pay._3) == "Saque":
         #         start += 1
@@ -333,7 +394,7 @@ class Main:
         #     Main.save_pedidos()
         
         
-Main.obtendo_valores()
+Main.start_main()
 
 # produto = "Kit Chave Torx + Kit Allen 18 Peças Aço Cromo Vanadium"
 # variacao = "Allen + Torx"
