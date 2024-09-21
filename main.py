@@ -8,6 +8,23 @@ import os
 class Main:
     def __init__(self) -> None:
         pass
+   
+    def consulta_preco(produto):
+        workbook_new = openpyxl.load_workbook("RELATORIO_VENDAS.xlsx")
+        sheet_produtos = workbook_new["PRODUTOS"]
+        df = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="PRODUTOS")
+        
+        linha = 0
+        for produtos in sheet_produtos['C']:
+            # print(produto[0])
+            # print(produto[1])
+            if produto[0] == produtos.value and produto[1] == sheet_produtos['D'][linha].value:
+                valor = sheet_produtos['E'][linha].value
+                return float(valor)
+            linha += 1
+        
+        return 0
+        
     
     def save_produtos(produto):
         """SALVA PRODUTOS NA TABELA RELATORIO VENDAS
@@ -99,8 +116,8 @@ class Main:
     #     workbook_new.save("RELATORIO_VENDAS.xlsx")
     
     def save_pedidos(infos_pedidos, id_igual = False):
-        workbook_new = openpyxl.load_workbook("RELATORIO_VENDAS.xlsx")
-        sheet_vendas = workbook_new["VENDAS"]
+        workbook_pedidos = openpyxl.load_workbook("RELATORIO_VENDAS.xlsx")
+        sheet_vendas = workbook_pedidos["VENDAS"]
         df_vendas = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="VENDAS")
         linha_inserir_vendas = sheet_vendas.max_row + 1
         
@@ -117,19 +134,45 @@ class Main:
                 sheet_vendas[f"F{linha_inserir_vendas}"] = f"{infos_pedidos[4]}"   #  QUANTIDADE
                 sheet_vendas[f"G{linha_inserir_vendas}"] = f"{infos_pedidos[5]}"   #  ESTADO COMPRADOR
                 sheet_vendas[f"H{linha_inserir_vendas}"] = f"{infos_pedidos[6]}"   #  DATA E HORA
+                sheet_vendas[f"I{linha_inserir_vendas}"] = f"{round(float(infos_pedidos[7]), 2)}"   #  VALOR DO PRODUTO
+                sheet_vendas[f"J{linha_inserir_vendas}"] = f"{round(float(infos_pedidos[8]), 2)}"   #  VALOR PEDIDO
+                sheet_vendas[f"K{linha_inserir_vendas}"] = f"{round(float(infos_pedidos[9]), 2)}"   #  VALOR PAGO DA PLATAFORMA
+                
+                custo_produto = round((Main.consulta_preco([infos_pedidos[2], infos_pedidos[3]])*int(infos_pedidos[4])), 2)
+                sheet_vendas[f"L{linha_inserir_vendas}"] = f"{custo_produto}"   #  CUSTO DO PRODUTO
+                
+                lucro_final = round(infos_pedidos[9] - custo_produto, 2)
+                sheet_vendas[f"M{linha_inserir_vendas}"] = f"{lucro_final}"   #  LUCRO FINAL
+                
+                perc_lucro = round((lucro_final*100)/custo_produto, 2)
+                
+                sheet_vendas[f"N{linha_inserir_vendas}"] = f"{perc_lucro}%"   #  % DE LUCRO
+                workbook_pedidos.save("RELATORIO_VENDAS.xlsx")
+        else:
+                sheet_vendas[f"B{linha_inserir_vendas}"] = f"{infos_pedidos[0]}"   #  ID Pedido
+                sheet_vendas[f"C{linha_inserir_vendas}"] = f"{infos_pedidos[1]}"   #  SKU
+                sheet_vendas[f"D{linha_inserir_vendas}"] = f"{infos_pedidos[2]}"   #  PRODUTO
+                sheet_vendas[f"E{linha_inserir_vendas}"] = f"{infos_pedidos[3]}"   #  VARIAÇÃO
+                sheet_vendas[f"F{linha_inserir_vendas}"] = f"{infos_pedidos[4]}"   #  QUANTIDADE
+                sheet_vendas[f"G{linha_inserir_vendas}"] = f"{infos_pedidos[5]}"   #  ESTADO COMPRADOR
+                sheet_vendas[f"H{linha_inserir_vendas}"] = f"{infos_pedidos[6]}"   #  DATA E HORA
                 sheet_vendas[f"I{linha_inserir_vendas}"] = f"{infos_pedidos[7]}"   #  VALOR DO PRODUTO
                 sheet_vendas[f"J{linha_inserir_vendas}"] = f"{infos_pedidos[8]}"   #  VALOR PEDIDO
-                sheet_vendas[f"K{linha_inserir_vendas}"] = f"{infos_pedidos[9]}"   #  VALOR PAGO A PLATAFORMA
+                sheet_vendas[f"K{linha_inserir_vendas}"] = f"{infos_pedidos[9]}"   #  VALOR PAGO DA PLATAFORMA
                 
-                custo_produto = 
-                sheet_vendas[f"L{linha_inserir_vendas}"] = f"{custo_produto}"   #  ID Pedido
-                sheet_vendas[f"M{linha_inserir_vendas}"] = f"{infos_pedidos[0]}"   #  ID Pedido
-                sheet_vendas[f"N{linha_inserir_vendas}"] = f"{infos_pedidos[0]}"   #  ID Pedido
-                       
-             
-        
-
-        
+                custo_produto = Main.consulta_preco([infos_pedidos[2], infos_pedidos[3]])
+                sheet_vendas[f"L{linha_inserir_vendas}"] = f"{custo_produto}"   #  CUSTO DO PRODUTO
+                workbook_pedidos.save("RELATORIO_VENDAS.xlsx")
+                
+                # lucro_final = infos_pedidos[9] - custo_produto
+                # sheet_vendas[f"M{linha_inserir_vendas}"] = f"{lucro_final}"   #  LUCRO FINAL
+                
+                # perc_lucro = (lucro_final*100)/custo_produto
+                
+                # sheet_vendas[f"N{linha_inserir_vendas}"] = f"{perc_lucro}%"  
+    
+        # workbook_pedidos.save("RELATORIO_VENDAS.xlsx")
+               
         
         
     def obtendo_valores():     
@@ -147,8 +190,9 @@ class Main:
         print("1 - Para Obter os produtos")
         print("2 - Para Obter os pedidos")
         escolha_menu = input(">> ")
-        
-        if escolha_menu == 1:
+        print(escolha_menu)
+        if int(escolha_menu) == 1:
+            print("Entrou na opção 1!")
             ctt = 0
             cont = 19
             id_obtido = None
@@ -195,7 +239,11 @@ class Main:
                                     pnl_all[f"BE{linha_achada}"].value, #  6 DATA E HORAS
                                     float(pnl_all[f"Q{linha_achada}"].value), # 7 VALOR VENDA DO PRODUTO
                                     float(pnl_all[f"AJ{linha_achada}"].value), #  8 VALOR TOTAL DO PEDIDO
-                                    float(pnl_all[f"AO{linha_achada}"].value) + float(pnl_all[f"AP{linha_achada}"].value) #  9 VALOR TOTAL PAGO A PLATAFORMA
+                                    (float(pnl_all[f"AJ{linha_achada}"].value) - 
+                                     (float(pnl_all[f"AO{linha_achada}"].value) + 
+                                     float(pnl_all[f"AP{linha_achada}"].value)+
+                                     float(pnl_all[f"AB{linha_achada}"].value)+
+                                     float(pnl_all[f"AG{linha_achada}"].value))) #  9 VALOR TOTAL PAGO A PLATAFORMA
                                 ])
                             else:
                                 Main.save_pedidos([
@@ -227,3 +275,10 @@ class Main:
         
         
 Main.obtendo_valores()
+
+# produto = "Kit Chave Torx + Kit Allen 18 Peças Aço Cromo Vanadium"
+# variacao = "Allen + Torx"
+
+# valor = Main.consulta_preco([produto, variacao])
+
+# print("Retornado:  -->>", valor)
