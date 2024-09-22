@@ -70,7 +70,7 @@ class Main:
         print(f"\n -> {nome} \n  --> {variacao} \n  ---->{sku}") 
         custo = input("\ninforme o valor do custo do produto: ")
         sheet_produtos[f"E{linha_inserir}"] = float(custo)
-        workbook_new.save("RELATORIO_VENDAS_fim.xlsx")
+        workbook_new.save("RELATORIO_VENDAS.xlsx")
         return float(custo)
         
         
@@ -106,6 +106,10 @@ class Main:
     def start_main():
         caminho_pay = "pay.xlsx"
         df_pay = pd.read_excel(caminho_pay, sheet_name="Sheet1")
+        workbook = openpyxl.load_workbook("RELATORIO_VENDAS.xlsx")
+        sheet = workbook.active
+        sheet.delete_rows(4, sheet.max_row)
+        workbook.save("RELATORIO_VENDAS.xlsx")
                 
         ## Obtenção dos ids Sacados
         start_saque = 0
@@ -238,6 +242,10 @@ class Main:
                     ctt+=1
                 tt_prod -= 1
             ctt += 1
-                    
+        
+        workbook.save("RELATORIO_VENDAS_fim.xlsx")
+        
+        sheet.delete_rows(4, sheet.max_row)       
+        workbook.save("RELATORIO_VENDAS.xlsx")
         
 Main.start_main()
