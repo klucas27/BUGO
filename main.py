@@ -70,7 +70,7 @@ class Main:
         print(f"\n -> {nome} \n  --> {variacao} \n  ---->{sku}") 
         custo = input("\ninforme o valor do custo do produto: ")
         sheet_produtos[f"E{linha_inserir}"] = float(custo)
-        workbook_new.save("RELATORIO_VENDAS.xlsx")
+        workbook_new.save("RELATORIO_VENDAS_fim.xlsx")
         return float(custo)
         
         
@@ -115,7 +115,7 @@ class Main:
             if ids._3 == "Saque":
                 start_saque +=1
                 continue
-            if start_saque == 1 and str(ids._5) == "Entrada":
+            if start_saque == 1 and str(ids._5) == "Entrada" and str(ids._3).startswith("Renda do pedido"):
                 id_sacados.append(ids._4)
 
         ## Obtenção das informações dos pedidos conforme por id
@@ -160,7 +160,6 @@ class Main:
                     pedidos_all._57,  #  19 data completado
                     float(custo_produto)*int(pedidos_all.Quantidade),  # 20 Custo produto *                    
                     ])
-        
     
         ## obtendo valores de custo
         print("Ordenando os pedidos...")
@@ -172,7 +171,8 @@ class Main:
                 #print(pedidos_ordenados)
                 if str(pedidos_desordenados[0]) == str(pedidos_ordenados):
                     new_infos.append(pedidos_desordenados)
-        
+                
+                
         print("Salvando os pedidos na tabela!(Pode Demorar Bastante)...")
         ctt = 0
         while ctt < len(new_infos):
@@ -190,6 +190,7 @@ class Main:
                         float(new_infos[ctt][14]) +
                         float(new_infos[ctt][15]) +
                         float(new_infos[ctt][16]) +
+                        float(new_infos[ctt][11]) +
                         float(new_infos[ctt][17])
                     )
                     
