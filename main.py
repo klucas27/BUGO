@@ -97,19 +97,16 @@ class Main:
         sheet_vendas[f"P{linha_inserir_vendas}"] = f"{infos_pedidos[14]}"
         sheet_vendas[f"Q{linha_inserir_vendas}"] = f"{infos_pedidos[15]}"
         
-        
-        
-        
         workbook_pedidos.save("RELATORIO_VENDAS.xlsx")
       
 
     def start_main():
         caminho_pay = "pay.xlsx"
         df_pay = pd.read_excel(caminho_pay, sheet_name="Sheet1")
-        workbook = openpyxl.load_workbook("RELATORIO_VENDAS.xlsx")
-        sheet = workbook.active
-        sheet.delete_rows(4, sheet.max_row)
-        workbook.save("RELATORIO_VENDAS.xlsx")
+        # workbook = openpyxl.load_workbook("RELATORIO_VENDAS.xlsx")
+        # sheet = workbook.active
+        # sheet.delete_rows(4, sheet.max_row)
+        # workbook.save("RELATORIO_VENDAS.xlsx")
                 
         ## Obtenção dos ids Sacados
         start_saque = 0
@@ -242,10 +239,5 @@ class Main:
                     ctt+=1
                 tt_prod -= 1
             ctt += 1
-        
-        workbook.save("RELATORIO_VENDAS_fim.xlsx")
-        
-        sheet.delete_rows(4, sheet.max_row)       
-        workbook.save("RELATORIO_VENDAS.xlsx")
-        
+                
 Main.start_main()
