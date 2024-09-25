@@ -126,6 +126,8 @@ class Main:
         df_all_oders = pd.read_excel(caminho_all_oders, sheet_name="orders")
         
         tt_ids = 1
+        valor_custo_total = 0
+        subtotal_pedido = 0
         id_selecionado = None
         for n_idsacado in id_sacados:
             for inf_obtd in df_all_oders.itertuples():
@@ -144,7 +146,8 @@ class Main:
                     if n_idsacado[0] == "Saldo da Carteira" and str(n_idsacado[1]).startswith("Renda do pedido") and str(n_idsacado[3]) == "Entrada":
                         
                         custo_produto = round(float(Main.consulta_preco([inf_obtd._13, variacao, inf_obtd._14])), 2)
-                        # print(df_all_oders.columns)
+                        subtotal_pedido = inf_obtd._20
+                        print(df_all_oders.columns)
                         if n_idsacado == id_selecionado:
                             """ --- produto igual! ---"""
                             Main.save_pedidos([
@@ -167,6 +170,22 @@ class Main:
                             ])
 
                         else:
+                            print((df_all_oders['ID do pedido'] == f"{n_idsacado}").sum())
+                            
+                            if ((df_all_oders['ID do pedido'] == f"{n_idsacado}").sum()) > 1:
+                                print("Entrou do if")
+                                os.system("Pause")
+                                valor_custo_total == 0     
+                                subtotal_pedido == 0                           
+                                for pas in df_all_oders.itertuples():
+                                    if pas._1 == f"{n_idsacado}":
+                                        print("Entrou no segundo id")
+                                        os.system("Pause")
+                                        valor_custo_total += float(Main.consulta_preco([pas._13, pas._15, pas._14]))
+                                        subtotal_pedido += float(inf_obtd._20)
+                                        
+                                custo_produto = round(float(valor_custo_total), 2)
+                                                            
                             valor_recebido = float(inf_obtd._20)- (
                                 inf_obtd._28 + inf_obtd._33 + inf_obtd._39 + inf_obtd._40 + inf_obtd._41 + inf_obtd._42)
                             
