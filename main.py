@@ -10,13 +10,6 @@ class Main:
         pass
    
     def consulta_preco(produto):
-        workbook_new = openpyxl.load_workbook("RELATORIO_VENDAS.xlsx")
-        sheet_produtos = workbook_new["PRODUTOS"]
-        df = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="PRODUTOS")
-        
-        linha = 0
-        valor = 0
-        
         """Produto = [
             0 - nome
             1 - variacao
@@ -24,6 +17,13 @@ class Main:
         ]
 
         """
+        workbook_new = openpyxl.load_workbook("RELATORIO_VENDAS.xlsx")
+        sheet_produtos = workbook_new["PRODUTOS"]
+        df = pd.read_excel("RELATORIO_VENDAS.xlsx", sheet_name="PRODUTOS")
+        
+        linha = 0
+        valor = 0
+        
         for produtos in sheet_produtos['C']:
             # print(produto[0])
             # print(produto[1])
@@ -103,22 +103,133 @@ class Main:
     def start_main():
         caminho_pay = "pay.xlsx"
         df_pay = pd.read_excel(caminho_pay, sheet_name="Sheet1")
-        # workbook = openpyxl.load_workbook("RELATORIO_VENDAS.xlsx")
-        # sheet = workbook.active
-        # sheet.delete_rows(4, sheet.max_row)
-        # workbook.save("RELATORIO_VENDAS.xlsx")
-                
+        
         ## Obtenção dos ids Sacados
         start_saque = 0
         id_sacados = []
         print("Obtendo ids Sacados...")        
         for ids in df_pay.itertuples():
+            # id_sacados.append((ids._4, ids._6))
             if ids._3 == "Saque":
                 start_saque +=1
                 continue
-            if start_saque == 1 and str(ids._5) == "Entrada" and str(ids._3).startswith("Renda do pedido"):
-                id_sacados.append(ids._4)
+            if start_saque == 1:
+                id_sacados.append((ids._2, # 0 Tipo Transação
+                                   ids._3, # 1 Descrição
+                                   ids._4, # 2 ID
+                                   ids._5, # 3 Direção dinehiro
+                                   ids._6) # 4 Valor
+                                  )
+        
+        ## Obtenção das informações dos pedidos conforme por id
+        caminho_all_oders = "all.xlsx"
+        df_all_oders = pd.read_excel(caminho_all_oders, sheet_name="orders")
+        
+        tt_ids = 1
+        id_selecionado = None
+        for n_idsacado in id_sacados:
+            for inf_obtd in df_all_oders.itertuples():
+                
+                if n_idsacado[2] == inf_obtd._1:
+                
+                    if str(inf_obtd._15) == "nan":
+                            variacao = "S/V"
+                    else:
+                        variacao = str(inf_obtd._15)
+                        
+                        
+                    if float(n_idsacado[4]) < 0:
+                        pass
+                    
+                    if n_idsacado[0] == "Saldo da Carteira" and str(n_idsacado[1]).startswith("Renda do pedido") and str(n_idsacado[3]) == "Entrada":
+                        
+                        custo_produto = round(float(Main.consulta_preco([inf_obtd._13, variacao, inf_obtd._14])), 2)
+                        # print(df_all_oders.columns)
+                        if n_idsacado == id_selecionado:
+                            """ --- produto igual! ---"""
+                            Main.save_pedidos([
+                                f"-", # 0 ID Pedido
+                                f"-", # 1 Status PEdido
+                                f"-", # 2 Estado da Venda
+                                f"-", # 3 Data de envio
+                                f"-", # 4 Data Confirmado
+                                f"{inf_obtd._13}", # 5 Nome Produto
+                                f"{inf_obtd._14}", # 6 SKU Produto
+                                f"{variacao}", # 7 Variação
+                                round(float(inf_obtd._16), 2), # 8 Preço Original
+                                round(float(inf_obtd._17), 2), # 9 Preço de Venda
+                                int(inf_obtd.Quantidade), # 10 Quantidade
+                                "-", # 11 Subtotal
+                                "-", # 12 Valor Recebido
+                                round(float(custo_produto), 2), # 13 Custo
+                                "-", # 14 Lucro
+                                "-", # 5% Lucro
+                            ])
 
+                        else:
+                            valor_recebido = float(inf_obtd._20)- (
+                                inf_obtd._28 + inf_obtd._33 + inf_obtd._39 + inf_obtd._40 + inf_obtd._41 + inf_obtd._42)
+                            
+                            lucro = valor_recebido - custo_produto
+                            
+                            Main.save_pedidos([
+                                f"{inf_obtd._1}", # 0 ID Pedido
+                                f"{inf_obtd._2}", # 1 Status PEdido
+                                f"{inf_obtd.UF}", # 2 Estado da Venda
+                                f"{inf_obtd._9}", # 3 Data de envio
+                                f"{inf_obtd._57}", # 4 Data Confirmado
+                                f"{inf_obtd._13}", # 5 Nome Produto
+                                f"{inf_obtd._14}", # 6 SKU Produto
+                                f"{variacao}", # 7 Variação
+                                round(float(inf_obtd._16), 2), # 8 Preço Original
+                                round(float(inf_obtd._17), 2), # 9 Preço de Venda
+                                int(inf_obtd.Quantidade), # 10 Quantidade
+                                round(float(inf_obtd._20), 2), # 11 Subtotal
+                                round(float(valor_recebido), 2), # 12 Valor Recebido
+                                round(float(custo_produto), 2), # 13 Custo
+                                round(float(lucro), 2), # 14 Lucro
+                                round(float(0), 2), # 5% Lucro
+                            ])
+                        
+                                
+                        
+                        
+                        
+                        
+                    #     Main.save_pedidos([
+                    #     new_infos[ctt][0], #0
+                    #     new_infos[ctt][1], #1
+                    #     new_infos[ctt][18],  #2
+                    #     new_infos[ctt][2],  # 3
+                    #     new_infos[ctt][3],  # 4
+                    #     new_infos[ctt][4],  # 5
+                    #     new_infos[ctt][5],  # 6
+                    #     new_infos[ctt][6],  # 7
+                    #     new_infos[ctt][7],  # 8
+                    #     round(float(new_infos[ctt][8]), 2),  #9
+                    #     new_infos[ctt][9],  # 10
+                    #     round(float(total_venda), 2),  # 11
+                    #     round(float(valor_recebido), 2),  #12
+                    #     round(float(custo_total), 2),  #13
+                    #     round(float(lucro_final), 2),  # 14
+                    #     round(float(porct_lucro), 2),  # 15
+                                               
+                    # ])
+    
+                    
+                        print("ID: ", n_idsacado[2], "Salvo!!")
+                    
+                    tt_ids +=1
+                    id_selecionado = n_idsacado
+        
+        print(tt_ids)
+        
+        
+        # for get_infos in df_all_oders.itertuples():
+            # for ver_ids_sacados in id_sacados:
+                # print(ver_ids_sacados[0])
+        
+        """
         ## Obtenção das informações dos pedidos conforme por id
         print("Obtendo informações do pedido...")
         caminho_all_oders = "all.xlsx"
@@ -239,5 +350,6 @@ class Main:
                     ctt+=1
                 tt_prod -= 1
             ctt += 1
+        """
                 
 Main.start_main()
