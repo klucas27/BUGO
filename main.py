@@ -147,7 +147,7 @@ class Main:
                         
                         custo_produto = round(float(Main.consulta_preco([inf_obtd._13, variacao, inf_obtd._14])), 2)
                         subtotal_pedido = inf_obtd._20
-                        print(df_all_oders.columns)
+                        # print(df_all_oders.columns)
                         if n_idsacado == id_selecionado:
                             """ --- produto igual! ---"""
                             Main.save_pedidos([
@@ -170,7 +170,8 @@ class Main:
                             ])
 
                         else:
-                            print((df_all_oders['ID do pedido'] == f"{n_idsacado}").sum())
+                            tt_igual = (df_all_oders['ID do pedido'] == f"{n_idsacado}").sum()
+                            print(tt_igual)
                             
                             if ((df_all_oders['ID do pedido'] == f"{n_idsacado}").sum()) > 1:
                                 print("Entrou do if")
