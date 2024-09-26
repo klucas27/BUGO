@@ -130,6 +130,8 @@ class Main:
         subtotal_pedido = 0
         id_selecionado = None
         for n_idsacado in id_sacados:
+            os.system("cls")
+            print("Obtendo iformações do pedido e salvando na tabela!! Não Feche! ......")
             for inf_obtd in df_all_oders.itertuples():
                 
                 if n_idsacado[2] == inf_obtd._1:
@@ -145,8 +147,10 @@ class Main:
                     
                     if n_idsacado[0] == "Saldo da Carteira" and str(n_idsacado[1]).startswith("Renda do pedido") and str(n_idsacado[3]) == "Entrada":
                         
-                        custo_produto = round(float(Main.consulta_preco([inf_obtd._13, variacao, inf_obtd._14])), 2)
+                        custo_produto = round(float(Main.consulta_preco([inf_obtd._13, variacao, inf_obtd._14]))*int(inf_obtd.Quantidade), 2)
                         subtotal_pedido = inf_obtd._20
+                        valor_recebido = float(inf_obtd._20)- (
+                                inf_obtd._28 + inf_obtd._33 + inf_obtd._39 + inf_obtd._40 + inf_obtd._41 + inf_obtd._42)
                         # print(df_all_oders.columns)
                         if n_idsacado == id_selecionado:
                             """ --- produto igual! ---"""
@@ -164,33 +168,55 @@ class Main:
                                 int(inf_obtd.Quantidade), # 10 Quantidade
                                 "-", # 11 Subtotal
                                 "-", # 12 Valor Recebido
-                                round(float(custo_produto), 2), # 13 Custo
+                                "-", # 13 Custo
                                 "-", # 14 Lucro
                                 "-", # 5% Lucro
                             ])
 
                         else:
-                            tt_igual = (df_all_oders['ID do pedido'] == f"{n_idsacado}").sum()
-                            print(tt_igual)
+                            tt_igual = (df_all_oders['ID do pedido'].to_list()).count(F"{n_idsacado[2]}")
+                            # print(tt_igual)
                             
-                            if ((df_all_oders['ID do pedido'] == f"{n_idsacado}").sum()) > 1:
-                                print("Entrou do if")
-                                os.system("Pause")
-                                valor_custo_total == 0     
-                                subtotal_pedido == 0                           
+                            # os.system("Pause")
+                            if tt_igual > 1:
+                                # print("Entrou do if")
+                                valor_custo_total = 0     
+                                subtotal_pedido = 0
+                                valor_recebido_total = 0  
+                                # valor_recebido = 0   
+                                # lt = df_all_oders.to_dict()
+                                # print(lt)                      
                                 for pas in df_all_oders.itertuples():
-                                    if pas._1 == f"{n_idsacado}":
-                                        print("Entrou no segundo id")
-                                        os.system("Pause")
-                                        valor_custo_total += float(Main.consulta_preco([pas._13, pas._15, pas._14]))
-                                        subtotal_pedido += float(inf_obtd._20)
+                                    if str(pas._1) == f"{n_idsacado[2]}":
+                                        variacao1 = pas._15
+                                        
+                                        if str(variacao1) == "nan":
+                                            variacao1 = "S/V"
+                                        else:
+                                            variacao1 = str(pas._15)
+                                        # for passe in pas.coll:
+                                        #     print(passe)
+                                            
+                                        print(pas._20)
+                                        
+                                        valor_custo_total += float(Main.consulta_preco([pas._13, variacao1, pas._14])*int(pas.Quantidade))
+                                        subtotal_pedido += float(pas._20)
+                                        # valor_recebido_un =  (pas._20 - (
+                                        #     float(pas._28) + float(pas._33) + float(pas._39) + float(pas._40) + float(pas._41) + float(pas._42)))  
+                                        # valor_recebido_total += valor_recebido_un
+                                        gastos_pago = float(pas._28) + float(pas._33) + float(pas._39) + float(pas._40) + float(pas._41) + float(pas._42)
                                         
                                 custo_produto = round(float(valor_custo_total), 2)
-                                                            
-                            valor_recebido = float(inf_obtd._20)- (
-                                inf_obtd._28 + inf_obtd._33 + inf_obtd._39 + inf_obtd._40 + inf_obtd._41 + inf_obtd._42)
+                                
+                                valor_recebido = subtotal_pedido - gastos_pago
+                                print(valor_recebido)
+                                print(gastos_pago)
+                                
+                                # os.system("Pause")
+                                                                        
                             
-                            lucro = valor_recebido - custo_produto
+                            
+                            lucro = (valor_recebido - custo_produto)
                             
                             Main.save_pedidos([
                                 f"{inf_obtd._1}", # 0 ID Pedido
@@ -204,14 +230,33 @@ class Main:
                                 round(float(inf_obtd._16), 2), # 8 Preço Original
                                 round(float(inf_obtd._17), 2), # 9 Preço de Venda
                                 int(inf_obtd.Quantidade), # 10 Quantidade
-                                round(float(inf_obtd._20), 2), # 11 Subtotal
+                                round(float(subtotal_pedido), 2), # 11 Subtotal
                                 round(float(valor_recebido), 2), # 12 Valor Recebido
                                 round(float(custo_produto), 2), # 13 Custo
                                 round(float(lucro), 2), # 14 Lucro
                                 round(float(0), 2), # 5% Lucro
                             ])
                         
-                                
+                    else:
+                        Main.save_pedidos([
+                                f"{n_idsacado[2]}", # 0 ID Pedido
+                                f"Outros", # 1 Status PEdido
+                                f"{inf_obtd.UF}", # 2 Estado da Venda
+                                f"{inf_obtd._9}", # 3 Data de envio
+                                f"{inf_obtd._57}", # 4 Data Confirmado
+                                f"-", # 5 Nome Produto
+                                f"-", # 6 SKU Produto
+                                f"-", # 7 Variação
+                                f"-", # 8 Preço Original
+                                f"-", # 9 Preço de Venda
+                                f"-", # 10 Quantidade
+                                f"-", # 11 Subtotal
+                                round(float(n_idsacado[4]), 2), # 12 Valor Recebido
+                                f"-", # 13 Custo
+                                f"-", # 14 Lucro
+                                f"-", # 5% Lucro
+                            ])
+                                                     
                         
                         
                         
@@ -241,8 +286,32 @@ class Main:
                     
                     tt_ids +=1
                     id_selecionado = n_idsacado
-        
-        print(tt_ids)
+                
+                # else:
+                #     print(f"{n_idsacado[2]}")
+                #     Main.save_pedidos([
+                #                 f"{n_idsacado[2]}", # 0 ID Pedido
+                #                 f"Não Encontrado", # 1 Status PEdido
+                #                 f"-", # 2 Estado da Venda
+                #                 f"-", # 3 Data de envio
+                #                 f"-", # 4 Data Confirmado
+                #                 f"-", # 5 Nome Produto
+                #                 f"-", # 6 SKU Produto
+                #                 f"-", # 7 Variação
+                #                 f"-", # 8 Preço Original
+                #                 f"-", # 9 Preço de Venda
+                #                 f"-", # 10 Quantidade
+                #                 f"-", # 11 Subtotal
+                #                 f"-", # 12 Valor Recebido
+                #                 f"-", # 13 Custo
+                #                 f"-", # 14 Lucro
+                #                 f"-", # 5% Lucro
+                #             ])
+                #     continue
+                    
+        # os.system("cls")
+        print("Finalizado com Sucesso!")
+        # print(tt_ids)
         
         
         # for get_infos in df_all_oders.itertuples():
