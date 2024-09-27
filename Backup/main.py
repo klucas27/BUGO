@@ -97,7 +97,6 @@ class Main:
         sheet_vendas[f"P{linha_inserir_vendas}"] = f"{infos_pedidos[14]}"
         sheet_vendas[f"Q{linha_inserir_vendas}"] = f"{infos_pedidos[15]}"
         sheet_vendas[f"R{linha_inserir_vendas}"] = f"{infos_pedidos[16]}"
-                
         
         workbook_pedidos.save("RELATORIO_VENDAS.xlsx")
       
