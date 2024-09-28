@@ -25,8 +25,7 @@ class Main:
         valor = 0
         
         for produtos in sheet_produtos['C']:
-            # print(produto[0])
-            # print(produto[1])
+            
             if produto[0] == produtos.value and produto[1] == sheet_produtos['D'][linha].value:
                 valor = sheet_produtos['E'][linha].value
                 return float(valor)
@@ -57,12 +56,7 @@ class Main:
 
         if variacao == "" or variacao == "nan":
             variacao = "S/V"
-            
-        # if nome in df.iloc[:, 2].values and variacao in df.iloc[:, 3].values:
-        #     print("Entrou na 1 condi")
-        # elif nome in df.iloc[:, 2].values and variacao == "S/V":
-        #     print("Entrou na 2 condi")
-        # else:
+       
         sheet_produtos[f"B{linha_inserir}"] = f"{sku}"   #  SKU
         sheet_produtos[f"C{linha_inserir}"] = f"{nome}"   # Nome
         sheet_produtos[f"D{linha_inserir}"] = f"{variacao}"   # variação
@@ -111,7 +105,6 @@ class Main:
         id_sacados = []
         print("Obtendo ids Sacados...")        
         for ids in df_pay.itertuples():
-            # id_sacados.append((ids._4, ids._6))
             if ids._3 == "Saque":
                 start_saque +=1
                 continue
@@ -123,7 +116,6 @@ class Main:
                                    ids._6) # 4 Valor
                                   )
         
-        ## Obtenção das informações dos pedidos conforme por id
         caminho_all_oders = "all.xlsx"
         df_all_oders = pd.read_excel(caminho_all_oders, sheet_name="orders")
         
@@ -289,189 +281,13 @@ class Main:
                                     f"-", # 15 Lucro
                                     f"-", # 16 5% Lucro
                                 ])
-                                                        
-                            
-                            
-                            
-                            
-                        #     Main.save_pedidos([
-                        #     new_infos[ctt][0], #0
-                        #     new_infos[ctt][1], #1
-                        #     new_infos[ctt][18],  #2
-                        #     new_infos[ctt][2],  # 3
-                        #     new_infos[ctt][3],  # 4
-                        #     new_infos[ctt][4],  # 5
-                        #     new_infos[ctt][5],  # 6
-                        #     new_infos[ctt][6],  # 7
-                        #     new_infos[ctt][7],  # 8
-                        #     round(float(new_infos[ctt][8]), 2),  #9
-                        #     new_infos[ctt][9],  # 10
-                        #     round(float(total_venda), 2),  # 11
-                        #     round(float(valor_recebido), 2),  #12
-                        #     round(float(custo_total), 2),  #13
-                        #     round(float(lucro_final), 2),  # 14
-                        #     round(float(porct_lucro), 2),  # 15
-                                                
-                        # ])
-        
+  
                         
                             print("ID: ", n_idsacado[2], "Salvo!!")
                         
                         tt_ids +=1
                         id_selecionado = n_idsacado
-                    
-                # else:
-                #     print(f"NÃO OK -> {n_idsacado[2]}")
-                #     Main.save_pedidos([
-                #                 f"{n_idsacado[2]}", # 0 ID Pedido
-                #                 f"Não Encontrado", # 1 Status PEdido
-                #                 f"-", # 2 Estado da Venda
-                #                 f"-", # 3 Data de envio
-                #                 f"-", # 4 Data Confirmado
-                #                 f"-", # 5 Nome Produto
-                #                 f"-", # 6 SKU Produto
-                #                 f"-", # 7 Variação
-                #                 f"-", # 8 Preço Original
-                #                 f"-", # 9 Preço de Venda
-                #                 f"-", # 10 Quantidade
-                #                 f"-", # 11 Subtotal
-                #                 round(float(n_idsacado[4]), 2), # 12 Valor Recebido
-                #                 f"-", # 13 Custo
-                #                 f"-", # 14 Lucro
-                #                 f"-", # 5% Lucro
-                #             ])
-                #     break
-                    
-        # os.system("cls")
-        print("Finalizado com Sucesso!")
-        # print(tt_ids)
         
-        
-        # for get_infos in df_all_oders.itertuples():
-            # for ver_ids_sacados in id_sacados:
-                # print(ver_ids_sacados[0])
-        
-        """
-        ## Obtenção das informações dos pedidos conforme por id
-        print("Obtendo informações do pedido...")
-        caminho_all_oders = "all.xlsx"
-        
-        df_all_oders = pd.read_excel(caminho_all_oders, sheet_name="orders")
-        # print(id_sacados.count("240831QTPQHE7X"))
-        infos_obtidas = []
-        id_pedido_only = []
-        for pedidos_all in df_all_oders.itertuples():
-            if id_sacados.count(f"{pedidos_all._1}") > 0:
-                # print(pedidos_all)
-                id_pedido_only.append(str(pedidos_all._1))
-                variacao = None
-                if str(pedidos_all._15) == "nan":
-                    variacao = "S/V"
-                else:
-                    variacao = str(pedidos_all._15)
-                    
-                custo_produto = round(float(Main.consulta_preco([pedidos_all._13, variacao, pedidos_all._14])), 2)
-                infos_obtidas.append([
-                    pedidos_all._1,  #  0 ID
-                    pedidos_all._2,  #  1 Status
-                    pedidos_all._9,  #  2 dia do envio
-                    pedidos_all._11,  # 3 dia pedido confirmado
-                    pedidos_all._13,  #  4 Nome do produto
-                    pedidos_all._14,  #  5 sku
-                    variacao,  #  6 variação
-                    pedidos_all._16,  #  7 preço original
-                    pedidos_all._17,  #  8 preço de venda
-                    pedidos_all.Quantidade,  #  9 quantidade
-                    pedidos_all._20,  #  10 Sbtotal
-                    pedidos_all._28,  #  11 gasto cupom
-                    pedidos_all._33,  #  12 desconto + po -
-                    pedidos_all._36,  #  13 Valor Total
-                    pedidos_all._39,  #  14 Taxa reversa
-                    pedidos_all._40,  #  15 Taxa transação
-                    pedidos_all._41,  # 16 Taxa comissao
-                    pedidos_all._42,  #  17 Taxa de serviço
-                    pedidos_all.UF,  #  18 Estado do cliente
-                    pedidos_all._57,  #  19 data completado
-                    float(custo_produto)*int(pedidos_all.Quantidade),  # 20 Custo produto *                    
-                    ])
-    
-        ## obtendo valores de custo
-        print("Ordenando os pedidos...")
-        caminho_save_relatorio = "RELATORIO_VENDAS.xlsx"
-        df_produtos_save = pd.read_excel(caminho_save_relatorio, sheet_name="PRODUTOS")
-        new_infos = []
-        for pedidos_ordenados in id_sacados:
-            for pedidos_desordenados in infos_obtidas:
-                #print(pedidos_ordenados)
-                if str(pedidos_desordenados[0]) == str(pedidos_ordenados):
-                    new_infos.append(pedidos_desordenados)
-                
-                
-        print("Salvando os pedidos na tabela!(Pode Demorar Bastante)...")
-        ctt = 0
-        while ctt < len(new_infos):
-            print("ID: ", str(new_infos[ctt][0]), " Salvando...")
-            tt_prod = int(id_pedido_only.count(str(new_infos[ctt][0])))
-
-            total_venda = 0
-            custo_total = 0
-            while tt_prod >= 1:
-                total_venda += new_infos[ctt][10]
-                custo_total += new_infos[ctt][20]
-                
-                if tt_prod == 1:
-                    valor_recebido = total_venda - (
-                        float(new_infos[ctt][14]) +
-                        float(new_infos[ctt][15]) +
-                        float(new_infos[ctt][16]) +
-                        float(new_infos[ctt][11]) +
-                        float(new_infos[ctt][17])
-                    )
-                    
-                    lucro_final = valor_recebido - custo_total
-                    porct_lucro = lucro_final*100/custo_total
-                    
-                    Main.save_pedidos([
-                        new_infos[ctt][0], #0
-                        new_infos[ctt][1], #1
-                        new_infos[ctt][18],  #2
-                        new_infos[ctt][2],  # 3
-                        new_infos[ctt][3],  # 4
-                        new_infos[ctt][4],  # 5
-                        new_infos[ctt][5],  # 6
-                        new_infos[ctt][6],  # 7
-                        new_infos[ctt][7],  # 8
-                        round(float(new_infos[ctt][8]), 2),  #9
-                        new_infos[ctt][9],  # 10
-                        round(float(total_venda), 2),  # 11
-                        round(float(valor_recebido), 2),  #12
-                        round(float(custo_total), 2),  #13
-                        round(float(lucro_final), 2),  # 14
-                        round(float(porct_lucro), 2),  # 15
-                                               
-                    ])
-                else:
-                    Main.save_pedidos([
-                        "||", #0
-                        "||", #1
-                        new_infos[ctt][18],  #2
-                        new_infos[ctt][2],  # 3
-                        new_infos[ctt][3],  # 4
-                        new_infos[ctt][4],  # 5
-                        new_infos[ctt][5],  # 6
-                        new_infos[ctt][6],  # 7
-                        new_infos[ctt][7],  # 8
-                        round(float(new_infos[ctt][8]), 2),  #9
-                        new_infos[ctt][9],  # 10
-                        "||",  # 11
-                        "||",  #12
-                        "||",  #13
-                        "||",  # 14
-                        "||",  # 15
-                    ])  
-                    ctt+=1
-                tt_prod -= 1
-            ctt += 1
-        """
+        print("Finalizado com Sucesso!!")                  
                 
 Main.start_main()
